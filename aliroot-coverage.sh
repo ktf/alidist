@@ -14,4 +14,5 @@ fi
 if [[ $CMAKE_BUILD_TYPE == COVERAGE ]]; then
   lcov --capture --directory $WORKDIR/sw/$ARCHITECTURE/profile-data --output-file coverage.info
   genhtml coverage.info --output-directory out
+  pushd out ; zip -c ../coverage.zip . ; popd
 fi
