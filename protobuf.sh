@@ -1,6 +1,8 @@
 package: protobuf
 version: v2.6.1
 source: https://github.com/google/protobuf
+requires:
+ - Python
 build_requires:
  - autotools
  - "GCC-Toolchain:(?!osx)"
