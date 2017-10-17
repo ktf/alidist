@@ -18,6 +18,14 @@ autoreconf -ivf
 make ${JOBS:+-j $JOBS}
 make install
 
+pushd python
+  export PYTHONUSERBASE=$INSTALLROOT
+  python setup.py build
+  mkdir -p $INSTALLROOT/lib/python2.7/site-packages
+  python setup.py install --user
+  unset PYTHONUSERBASE
+popd
+
 #ModuleFile
 MODULEDIR="$INSTALLROOT/etc/modulefiles"
 MODULEFILE="$MODULEDIR/$PKGNAME"
@@ -31,11 +39,11 @@ proc ModulesHelp { } {
 set version $PKGVERSION-@@PKGREVISION@$PKGHASH@@
 module-whatis "ALICE Modulefile for $PKGNAME $PKGVERSION-@@PKGREVISION@$PKGHASH@@"
 # Dependencies
-module load BASE/1.0
+module load BASE/1.0 ${PYTHON_VERSION:+Python/${PYTHON_VERSION}-${PYTHON_REVISION}}
 # Our environment
 setenv PROTOBUF_ROOT \$::env(BASEDIR)/$PKGNAME/\$version
 prepend-path LD_LIBRARY_PATH \$::env(PROTOBUF_ROOT)/lib
 $([[ ${ARCHITECTURE:0:3} == osx ]] && echo "prepend-path DYLD_LIBRARY_PATH \$::env(PROTOBUF_ROOT)/lib")
 prepend-path PATH \$::env(PROTOBUF_ROOT)/bin
-prepend-path PYTHONPATH \$::env(PROTOBUF_ROOT)/lib64/python2.7/site-packages:\$::env(PROTOBUF_ROOT)/lib/python2.7/site-packages
+prepend-path PYTHONPATH \$::env(PROTOBUF_ROOT)/lib/python2.7/site-packages/protobuf-${PKGVERSION:1}-py2.7.egg
 EoF
