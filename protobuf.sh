@@ -9,7 +9,7 @@ build_requires:
 prefer_system_check: |
    printf "#include <google/protobuf/stubs/common.h>\n#if (GOOGLE_PROTOBUF_VERSION < 2006001)\n#error \"System protobuf cannot be used, please install a version >= 2.6.1\"\n#endif\n" | cc -xc++ - -c -o /dev/null && protoc --version
 prepend_path:
-  PYTHONPATH: $PROTOBUF_ROOT/lib64/python2.7/site-packages:$PROTOBUF_ROOT/lib/python2.7/site-packages
+  PYTHONPATH: $PROTOBUF_ROOT/lib/python2.7/site-packages/protobuf-${PROTOBUF_VERSION:1}-py2.7.egg
 ---
 
 rsync -av --delete --exclude="**/.git" $SOURCEDIR/ .
