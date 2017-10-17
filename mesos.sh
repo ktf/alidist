@@ -28,7 +28,7 @@ unset PYTHON_VERSION
              --with-protobuf=${PROTOBUF_ROOT}
 
 # We build with fewer jobs to avoid OOM errors in GCC
-make ${JOBS+-j $JOBS} 
+make -j 4
 make install
 
 find $BUILDDIR/build/src/python/dist -name "*.egg" -exec cp {} $INSTALLROOT/lib/python2.7/site-packages/ \;
