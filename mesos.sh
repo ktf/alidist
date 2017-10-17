@@ -18,11 +18,15 @@ rsync -av --delete --exclude="**/.git" $SOURCEDIR/ .
 ./bootstrap
 mkdir build
 cd build
+
+# PYTHON_VERSION with vXXX seems to confuse configure
+unset PYTHON_VERSION
 ../configure --prefix="$INSTALLROOT"         \
              --enable-python                 \
              --disable-java                  \
              --with-glog=${GLOG_ROOT}        \
              --with-protobuf=${PROTOBUF_ROOT}
+
 # We build with fewer jobs to avoid OOM errors in GCC
 make ${JOBS+-j $JOBS} 
 make install
