@@ -12,6 +12,7 @@ rsync -a $SOURCEDIR/ ./
 mkdir -p third_party
 find $MESOS_ROOT/lib/python2.7/site-packages/ -name "*.egg" -exec cp {} third_party/ \;
 
+unset PYTHONHOME
 ./pants binary src/main/python/apache/aurora/executor:thermos_executor
 ./pants binary src/main/python/apache/aurora/tools:thermos_observer
 ./pants binary src/main/python/apache/thermos/runner:thermos_runner
