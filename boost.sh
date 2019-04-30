@@ -63,7 +63,11 @@ esac
 
 rsync -a $SOURCEDIR/ $BUILDDIR/
 cd $BUILDDIR/tools/build
-bash bootstrap.sh $TOOLSET
+# This is to work around an issue in boost < 1.70 where the include path
+# misses the ABI suffix. E.g. ../include/python3m rather than ../include/python3
+# This is causing havok on different combinations of Ubuntu / Anaconda installations.
+export CPLUS_INCLUDE_PATH="$CPLUS_INCLUDE_PATH:$(python3 -c 'import sysconfig; print(sysconfig.get_path("include"))')"
+bash bootstrap.sh $TOOLSET --with-python=python3
 mkdir -p $TMPB2
 ./b2 install --prefix=$TMPB2
 export PATH=$TMPB2/bin:$PATH
