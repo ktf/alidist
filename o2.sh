@@ -28,6 +28,7 @@ requires:
   - MLModels
   - KFParticle
   - RapidJSON
+  - DuckDB
 build_requires:
   - abseil
   - GMP
