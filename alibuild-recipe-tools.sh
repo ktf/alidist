@@ -2,6 +2,8 @@ package: alibuild-recipe-tools
 version: "0.2.3"
 tag: "v0.2.3"
 source: https://github.com/alisw/alibuild-recipe-tools
+tools:
+  - bin/alibuild-generate-module
 ---
 mkdir -p $INSTALLROOT/bin
 install $SOURCEDIR/alibuild-generate-module $INSTALLROOT/bin
