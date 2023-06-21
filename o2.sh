@@ -203,7 +203,7 @@ cmake $SOURCEDIR -DCMAKE_INSTALL_PREFIX=$INSTALLROOT                            
       ${ITSRESPONSE_ROOT:+-DITSRESPONSE=${ITSRESPONSE_ROOT}}
 # LLVM_ROOT is required for Gandiva
 
-cmake --build . -- ${JOBS+-j $JOBS} install
+cmake --build . -- ${JOBS+-j $JOBS} ${ALIBUILD_TARGET:+$ALIBUILD_TARGET/}install
 
 # install the compilation database so that we can post-check the code
 cp compile_commands.json ${INSTALLROOT}
