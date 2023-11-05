@@ -126,6 +126,7 @@ else
 fi
 
 unset DYLD_LIBRARY_PATH
+CMAKE_GENERATOR=${CMAKE_GENERATOR:-Ninja}
 # Standard ROOT build
 cmake $SOURCEDIR                                                                       \
       ${CMAKE_GENERATOR:+-G "$CMAKE_GENERATOR"}                                        \
