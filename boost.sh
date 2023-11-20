@@ -84,7 +84,6 @@ b2 -q                                            \
    --without-graph                               \
    --without-graph_parallel                      \
    --without-locale                              \
-   --without-math                                \
    --without-mpi                                 \
    ${BOOST_NO_PYTHON:+--without-python}          \
    --without-wave                                \
