@@ -86,7 +86,6 @@ b2 -q                                            \
    --without-locale                              \
    --without-mpi                                 \
    ${BOOST_NO_PYTHON:+--without-python}          \
-   --without-wave                                \
    --debug-configuration                         \
    -sNO_ZSTD=1                                   \
    ${BZ2_ROOT:+-sBZIP2_INCLUDE="$BZ2_ROOT/include"}  \
