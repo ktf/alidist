@@ -1,6 +1,6 @@
 package: ROOT
 version: "%(tag_basename)s"
-tag: "v6-28-08-alice1"
+tag: "v6-30-01-alice1"
 source: https://github.com/alisw/root.git
 requires:
   - arrow
@@ -53,6 +53,7 @@ incremental_recipe: |
 # understand yaml.
 cat >/dev/null <<EOF
 EOF
+
 unset ROOTSYS
 COMPILER_CC=cc
 COMPILER_CXX=c++
@@ -134,7 +135,6 @@ cmake $SOURCEDIR                                                                
       -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE                                             \
       -DCMAKE_INSTALL_PREFIX=$INSTALLROOT                                              \
       -Dalien=OFF                                                                      \
-      ${ALIEN_RUNTIME_REVISION:+-DMONALISA_DIR=$ALIEN_RUNTIME_ROOT}                    \
       ${CMAKE_CXX_STANDARD:+-DCMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}}                \
       -Dfreetype=ON                                                                    \
       -Dbuiltin_freetype=OFF                                                           \
@@ -165,6 +165,7 @@ cmake $SOURCEDIR                                                                
       -Dminuit2=ON                                                                     \
       -Dpythia6=ON                                                                     \
       -Dpythia6_nolink=ON                                                              \
+      -Dmathmore=ON                                                                    \
       -Droofit=ON                                                                      \
       -Dhttp=ON                                                                        \
       -Droot7=OFF                                                                      \
@@ -177,6 +178,7 @@ cmake $SOURCEDIR                                                                
       -Dbuiltin_afterimage=ON                                                          \
       -Dbuiltin_fftw3=OFF                                                              \
       -Dtmva-sofie=ON                                                                  \
+      -Dtmva-gpu=OFF                                                                   \
       -Ddavix=OFF                                                                      \
       ${USE_BUILTIN_GLEW:+-Dbuiltin_glew=ON}                                           \
       ${DISABLE_MYSQL:+-Dmysql=OFF}                                                    \
