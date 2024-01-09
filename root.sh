@@ -1,7 +1,7 @@
 package: ROOT
 version: "%(tag_basename)s"
-tag: "v6-30-01-alice2"
-source: https://github.com/alisw/root.git
+tag: "master"
+source: https://github.com/root-project/root.git
 requires:
   - arrow
   - AliEn-Runtime:(?!.*ppc64)
@@ -175,6 +175,7 @@ cmake $SOURCEDIR                                                                
       -Dtmva-sofie=ON                                                                  \
       -Dtmva-gpu=OFF                                                                   \
       -Ddavix=OFF                                                                      \
+      -Dunfold=ON                                                                      \
       ${USE_BUILTIN_GLEW:+-Dbuiltin_glew=ON}                                           \
       ${DISABLE_MYSQL:+-Dmysql=OFF}                                                    \
       ${ROOT_HAS_PYTHON:+-DPYTHON_PREFER_VERSION=3}                                    \
