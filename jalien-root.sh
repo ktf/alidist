@@ -11,6 +11,7 @@ requires:
 build_requires:
   - json-c
   - CMake
+  - ninja
   - "GCC-Toolchain:(?!osx)"
   - zlib
   - Alice-GRID-Utils
