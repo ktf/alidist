@@ -1,6 +1,6 @@
 package: ucx
 version: "%(tag_basename)s"
-tag: v1.13.1
+tag: v1.16.0
 requires:
   - "GCC-Toolchain:(?!osx)"
 build_requires:
@@ -9,16 +9,13 @@ build_requires:
   - "GCC-Toolchain:(?!osx)"
 source: https://github.com/openucx/ucx
 ---
-#!/bin/bash -e
-
 # Unified Communication X Library (linux only)
 ## NOTE: rdma-core and rdma-core-devel (v35+) packages must be installed for O2 FLP/EPN use
 
 printf "#include <rdma/rdma_cma.h>" | cc -xc - -c -o /dev/null ||
 ( printf "rdma-core not found.\n * On RHEL-compatible systems you probably need: rdma-core-devel\n"; exit 1; )
 
-rsync -a --delete --exclude "**/.git" ${SOURCEDIR}/ .
-./autogen.sh
+${SOURCEDIR}/autogen.sh
 ./contrib/configure-release-mt --prefix=${INSTALLROOT}     \
                                --with-verbs                \
                                --with-rdmacm               \
