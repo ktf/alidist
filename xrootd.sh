@@ -15,6 +15,11 @@ build_requires:
   - alibuild-recipe-tools
 prepend_path:
   PYTHONPATH: "${XROOTD_ROOT}/lib/python/site-packages"
+env:
+  XRD_CONNECTIONWINDOW: 3
+  XRD_CONNECTIONRETRY: 1
+  XRD_TIMEOUTRESOLUTION: 1
+  XRD_REQUESTTIMEOUT: 60
 ---
 #!/bin/bash -e
 
@@ -137,6 +142,11 @@ mkdir -p "$MODULEDIR"
 alibuild-generate-module --bin --lib --cmake > "$MODULEFILE"
 
 cat >> "$MODULEFILE" <<EoF
+setenv XRD_CONNECTIONWINDOW 3
+setenv XRD_CONNECTIONRETRY 1
+setenv XRD_TIMEOUTRESOLUTION 1
+setenv XRD_REQUESTTIMEOUT 60
+
 if { $XROOTD_PYTHON } {
   prepend-path PYTHONPATH \$PKG_ROOT/lib/python/site-packages
   # This is probably redundant, but should not harm.
