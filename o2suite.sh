@@ -7,11 +7,11 @@ requires:
   - Control-OCCPlugin
   - O2
   - O2Physics
-  - "ReadoutCard:(slc*)"
+  - "ReadoutCard:(slc.*x86)"
   - Readout
   - QualityControl
   - "DataDistribution:(?!osx)"
-  - "ALF:(?!osx)"
+  - "ALF:(?!osx|.*aarch64)"
   - "mesos:(slc.*)"
   - "TpcFecUtils:(?!osx)"
 valid_defaults:
