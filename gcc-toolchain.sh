@@ -121,7 +121,6 @@ pushd build-gcc
                    --disable-nls
   make ${JOBS+-j $JOBS} bootstrap-lean MAKEINFO=":"
   make install MAKEINFO=":"
-  (if cd gmp || cd ../gmp; then make install MAKEINFO=":"; fi)
   hash -r
 
   # GCC creates c++, but not cc
