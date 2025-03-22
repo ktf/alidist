@@ -35,6 +35,7 @@ rsync -av --delete --exclude="**/.git" $SOURCEDIR/ .
 ./bootstrap
 mkdir build
 cd build
+sed -i.bak -e's/c++11/c++20/' ../configure
 ../configure --prefix="$INSTALLROOT" \
     --disable-python \
     --disable-java \
