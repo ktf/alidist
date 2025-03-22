@@ -1,6 +1,7 @@
 package: DataDistribution
 version: "%(tag_basename)s"
-tag: v1.6.6
+tag: 24a79ab35b1f6b575246dfc93b360587127f5255
+source: https://github.com/ktf/DataDistribution
 requires:
   - "GCC-Toolchain:(?!osx)"
   - boost
@@ -15,7 +16,6 @@ requires:
   - fmt
 build_requires:
   - CMake
-source: https://github.com/AliceO2Group/DataDistribution
 incremental_recipe: |
   # reduce number of compile slots if invoked by Jenkins
   if [ ! "X$JENKINS_HOME" = X ]; then
