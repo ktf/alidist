@@ -6,6 +6,7 @@ requires:
   - boost
   - FairLogger
   - ZeroMQ
+  - fmt
 build_requires:
   - alibuild-recipe-tools
   - CMake
@@ -38,6 +39,8 @@ cmake "${SOURCEDIR}" -DCMAKE_INSTALL_PREFIX="${INSTALLROOT}"      \
       ${CXXSTD:+-DCMAKE_CXX_STANDARD=${CXXSTD}}                   \
       ${CXX_COMPILER:+-DCMAKE_CXX_COMPILER=${CXX_COMPILER}}       \
       ${CMAKE_BUILD_TYPE:+-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}} \
+      --debug-find                                                \
+      -DPicoSHA2_BUNDLED=ON                                       \
       -DCMAKE_INSTALL_LIBDIR=lib                                  \
       -DDISABLE_COLOR=ON                                          \
       -DBUILD_EXAMPLES=OFF                                        \
