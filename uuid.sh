@@ -8,7 +8,7 @@ build_requires:
 prepend_path:
   PKG_CONFIG_PATH: "$UUID_ROOT/share/pkgconfig"
 ---
-rsync -av --delete --exclude '**/.git' "$SOURCEDIR/" .
+rsync --chmod=ug=rwX -av --delete --exclude '**/.git' "$SOURCEDIR/" .
 if [[ $AUTOTOOLS_ROOT == "" ]]  && which brew >/dev/null; then
   PATH=$PATH:$(brew --prefix gettext)/bin
 fi
