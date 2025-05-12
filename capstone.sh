@@ -1,11 +1,13 @@
 package: capstone
-version: "4.0.2"
+version: "5.0.6"
 requires:
   - "GCC-Toolchain:(?!osx)"
 build_requires:
   - CMake
   - alibuild-recipe-tools
 source: https://github.com/aquynh/capstone
+prepend_path:
+  PKG_CONFIG_PATH: "$CAPSTONE_ROOT/lib/pkgconfig"
 ---
 cmake $SOURCEDIR                          \
       -DCAPSTONE_ARCHITECUTRE_DEFAULT=OFF \
