@@ -1,6 +1,6 @@
 package: O2Physics
 version: "%(tag_basename)s"
-tag: "daily-20250513-0000"
+tag: "daily-20250516-0000"
 requires:
   - O2
   - ONNXRuntime
@@ -13,8 +13,17 @@ build_requires:
   - ninja
   - alibuild-recipe-tools
 source: https://github.com/AliceO2Group/O2Physics
+track_env:
+  O2PHYSICS_COMPONENTS: "echo ${O2PHYSICS_COMPONENTS:-install}"
 incremental_recipe: |
-  cmake --build . -- ${JOBS:+-j$JOBS} install
+  if [ "X$O2PHYSICS_COMPONENTS" = "Xinstall" ]; then
+      cmake --build . -- ${JOBS+-j $JOBS} install
+  else
+    cmake --build . -- ${JOBS+-j $JOBS} Common/install
+    for x in $(echo $O2PHYSICS_COMPONENTS | tr , \\n); do
+      cmake --build . -- ${JOBS+-j $JOBS} $x/install
+    done
+  fi
   mkdir -p $INSTALLROOT/etc/modulefiles && rsync -a --delete etc/modulefiles/ $INSTALLROOT/etc/modulefiles
 ---
 #!/bin/sh
@@ -35,7 +44,16 @@ cmake "$SOURCEDIR" "-DCMAKE_INSTALL_PREFIX=$INSTALLROOT"                    \
       ${CLANG_REVISION:+-DLLVM_LINK_EXECUTABLE="$CLANG_ROOT/bin/llvm-link"} \
       ${LIBUV_ROOT:+-DLibUV_ROOT=$LIBUV_ROOT}                               \
       ${ALIBUILD_O2PHYSICS_TESTS:+-DO2PHYSICS_WARNINGS_AS_ERRORS=ON}
-cmake --build . -- ${JOBS+-j $JOBS} install
+
+
+if [ "X$O2PHYSICS_COMPONENTS" = "Xinstall" ]; then
+    cmake --build . -- ${JOBS+-j $JOBS} install
+else
+  cmake --build . -- ${JOBS+-j $JOBS} Common/install
+  for x in $(echo $O2PHYSICS_COMPONENTS | tr , \\n); do
+    cmake --build . -- ${JOBS+-j $JOBS} $x/install
+  done
+fi
 
 # export compile_commands.json in (taken from o2.sh)
 DEVEL_SOURCES="$(readlink $SOURCEDIR || echo $SOURCEDIR)"
