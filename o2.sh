@@ -1,6 +1,6 @@
 package: O2
 version: "%(tag_basename)s"
-tag: "daily-20250611-0000"
+tag: "daily-20250617-0000"
 requires:
   - abseil
   - arrow
@@ -28,7 +28,6 @@ requires:
   - ONNXRuntime
   - nlohmann_json
   - MLModels
-  - KFParticle
   - RapidJSON
   - bookkeeping-api
   - AliEn-CAs
