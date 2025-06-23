@@ -1,6 +1,6 @@
 package: O2
 version: "%(tag_basename)s"
-tag: "daily-20250617-0000"
+tag: "daily-20250623-0000"
 requires:
   - abseil
   - arrow
@@ -216,6 +216,7 @@ cmake $SOURCEDIR -DCMAKE_INSTALL_PREFIX=$INSTALLROOT                            
       ${DISABLE_GPU:+-DENABLE_CUDA=OFF -DENABLE_HIP=OFF -DENABLE_OPENCL=OFF}                              \
       ${ALIBUILD_ENABLE_CUDA:+-DENABLE_CUDA=ON}                                                           \
       ${ALIBUILD_ENABLE_HIP:+-DENABLE_HIP=ON}                                                             \
+      ${GPUCA_BUILD_EVENT_DISPLAY:+-GPUCA_BUILD_EVENT_DISPLAY=${GPUCA_BUILD_EVENT_DISPLAY}}               \
       ${ALIBUILD_O2_OVERRIDE_HIP_ARCHS:+-DHIP_AMDGPUTARGET=${ALIBUILD_O2_OVERRIDE_HIP_ARCHS}}             \
       ${ALIBUILD_O2_OVERRIDE_CUDA_ARCHS:+-DCUDA_COMPUTETARGET=${ALIBUILD_O2_OVERRIDE_CUDA_ARCHS}}         \
       ${CURL_ROOT:+-DCURL_ROOT=$CURL_ROOT}                                                                \
