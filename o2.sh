@@ -1,6 +1,6 @@
 package: O2
 version: "%(tag_basename)s"
-tag: "daily-20250708-0000"
+tag: "daily-20250714-0622"
 requires:
   - abseil
   - arrow
@@ -31,7 +31,6 @@ requires:
   - RapidJSON
   - bookkeeping-api
   - AliEn-CAs
-  - gpu-system
 build_requires:
   - abseil
   - GMP
@@ -40,6 +39,7 @@ build_requires:
   - O2-customization
   - Clang:(?!osx*)
   - ITSResponse
+  - gpu-system
 source: https://github.com/AliceO2Group/AliceO2
 env:
   VMCWORKDIR: "$O2_ROOT/share"
@@ -299,6 +299,7 @@ module load BASE/1.0 \\
             ${FFTW3_REVISION:+FFTW3/$FFTW3_VERSION-$FFTW3_REVISION}                                 \\
             ${ONNXRUNTIME_REVISION:+ONNXRuntime/$ONNXRUNTIME_VERSION-$ONNXRUNTIME_REVISION}         \\
             ${RAPIDJSON_REVISION:+RapidJSON/$RAPIDJSON_VERSION-$RAPIDJSON_REVISION}                 \\
+            ${NLOHMANN_JSON_REVISION:+nlohmann_json/$NLOHMANN_JSON_VERSION-$NLOHMANN_JSON_REVISION} \\
             ${MLMODELS_REVISION:+MLModels/$MLMODELS_VERSION-$MLMODELS_REVISION}                     \\
             ${BOOKKEEPING_API_REVISION:+bookkeeping-api/$BOOKKEEPING_API_VERSION-$BOOKKEEPING_API_REVISION}
 
