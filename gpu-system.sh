@@ -224,10 +224,11 @@ prefer_system_replacement_specs:
       #%Module1.0
       echo "ERROR: gpu-system.sh GPU detection failed: ${ALIBUILD_PREFER_SYSTEM_KEY}" 1>&2
       exit 1
-  ".*":
-    version: "%(key)s"
+  "cuda_arch[@]89[@]_12.9.86-rocm_arch[@]gfx906[#]gfx908@_6.3.42134-opencl-miopen-migraphx-cudnn-tensorrt":
+    version: "cuda_arch@89@_12.9.86-rocm_arch@gfx906#gfx908@_6.3.42134-opencl-miopen-migraphx-cudnn-tensorrt"
     recipe: |
       #!/bin/bash -e
+      echo "This is the container version"
       #%Module1.0
       mkdir -p "$INSTALLROOT"/etc
       rm -f "$INSTALLROOT"/etc/gpu-features-available.sh
