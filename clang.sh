@@ -108,15 +108,15 @@ rm "$INSTALLROOT"/lib/cmake/clang/*.bak
 # Allow clang to find our own GCC. Notice the cat does not expand variables because
 # we want to resolve the environment when we run, not when we build this, to avoid
 # relocation issues in case GCC and clang are not built at the same time.
-if [ ! "X$GCC_TOOLCHAIN_ROOT" = X ]; then
-  cat > "$INSTALLROOT/bin-safe/$(clang --print-target-triple)-clang++.cfg" << \EOF
---gcc-toolchain=$GCC_TOOLCHAIN_ROOT
+if [ ! "X$GCC_TOOLCHAIN_REVISION" = X ]; then
+  cat > "$INSTALLROOT/bin-safe/$($INSTALLROOT/bin-safe/clang --print-target-triple)-clang++.cfg" << EOF
+--gcc-toolchain=<CFGDIR>/../../../$GCC_TOOLCHAIN_VERSION-$GCC_TOOLCHAIN_REVISION
 EOF
-  cat > "$INSTALLROOT/bin-safe/$(clang --print-target-triple)-clang.cfg" << \EOF
---gcc-toolchain=$GCC_TOOLCHAIN_ROOT
+  cat > "$INSTALLROOT/bin-safe/$($INSTALLROOT/bin-safe/clang --print-target-triple)-clang.cfg" << EOF
+--gcc-toolchain=<CFGDIR>/../../../$GCC_TOOLCHAIN_VERSION-$GCC_TOOLCHAIN_REVISION
 EOF
-  cat > "$INSTALLROOT/bin-safe/$(clang --print-target-triple)-clang-cpp.cfg" << \EOF
---gcc-toolchain=$GCC_TOOLCHAIN_ROOT
+  cat > "$INSTALLROOT/bin-safe/$($INSTALLROOT/bin-safe/clang --print-target-triple)-clang-cpp.cfg" << EOF
+--gcc-toolchain=<CFGDIR>/../../../$GCC_TOOLCHAIN_VERSION-$GCC_TOOLCHAIN_REVISION
 EOF
 fi
 
