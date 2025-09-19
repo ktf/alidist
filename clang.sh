@@ -124,8 +124,10 @@ fi
 cat << \EOF > test.cc
 #include <iostream>
 EOF
-"$INSTALLROOT/bin-safe/clang++" -v -c test.cc
-
+# Because the build of clang happens in $INSTALLROOT, while GCC is
+# in WORK_DIR already, relative lookup is broken. Therefore we
+# hardcode the position of the configuration file when testing at build time.
+"$INSTALLROOT/bin-safe/clang++" ${GCC_TOOLCHAIN_REVISION:+--config $INSTALLROOT/bin-safe/$($INSTALLROOT/bin-safe/clang --print-target-triple)-clang++.cfg} -v -c test.cc
 
 # Modulefile
 mkdir -p etc/modulefiles
