@@ -1,6 +1,6 @@
 package: O2
-version: "%(tag_basename)s"
-tag: "daily-20250922-0000"
+version: "daily-20250922-0000_TEST"
+tag: "pr14646"
 requires:
   - abseil
   - arrow
@@ -40,7 +40,7 @@ build_requires:
   - O2-customization
   - Clang:(?!osx*)
   - ITSResponse
-source: https://github.com/AliceO2Group/AliceO2
+source: https://github.com/ktf/AliceO2
 env:
   VMCWORKDIR: "$O2_ROOT/share"
 prepend_path:
