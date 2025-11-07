@@ -7,9 +7,8 @@ requires:
 build_requires:
   - CMake
   - alibuild-recipe-tools
-prefer_system: .*
-prefer_system_check: |
-  printf "#include <nlohmann/json_fwd.hpp>\n" | cc -xc++ - -I"$(brew --prefix nlohmann-json)/include" -c -o /dev/null
+prepend-path:
+  CMAKE_PREFIX_PATH: "$NLOHMANN_JSON_ROOT/share/cmake"
 ---
 #!/bin/bash -e
   cmake "$SOURCEDIR"                             \
