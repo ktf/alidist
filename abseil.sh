@@ -12,7 +12,22 @@ build_requires:
 source: https://github.com/abseil/abseil-cpp
 prefer_system: "osx"
 prefer_system_check: |
-  printf '#include <absl/container/flat_hash_map.h>' | c++ -std=c++20 -I"$(brew --prefix abseil)/include" -c -xc++ - >/dev/null
+  case $ARCHITECTURE in
+    osx*)
+      printf '#include <absl/container/flat_hash_map.h>' | c++ -std=c++20 -I"$(brew --prefix abseil)/include" -c -xc++ - >/dev/null
+      printf "alibuild_system_replace: abseil-brew-$(brew info --json abseil-cpp | jq -r '.[0].installed[0].version')"
+      brew info --json abseil | jq -r '.[0].installed[0].version'
+      exit 0
+    ;;
+  esac
+  exit 1
+prefer_system_replacement_specs:
+  "abseil-brew.*":
+    version: "%(key)s"
+    env:
+      ABSEIL_ROOT: $(brew --prefix abseil)
+      ABSEIL_VERSION: $(brew info --json abseil | jq -r '.[0].installed[0].version')
+      ABSEIL_REVISION: "1"
 incremental_recipe: |
   cmake --build . -- ${JOBS:+-j$JOBS} install
   mkdir -p $INSTALLROOT/etc/modulefiles && rsync -a --delete etc/modulefiles/ $INSTALLROOT/etc/modulefiles
