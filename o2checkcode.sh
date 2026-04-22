@@ -6,6 +6,7 @@ requires:
 license: GPL-3.0
 build_requires:
   - CMake
+  - alibuild-recipe-tools
 force_rebuild: true
 ---
 #!/bin/bash -e
