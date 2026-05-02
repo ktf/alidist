@@ -27,15 +27,16 @@ export SHMSIZE=8000000000
 export NJOBS="$JOBS"
 export DPL_REPORT_PROCESSING=1
 
+copy_logs_and_cleanup() {
+  mkdir -p $BUILDDIR/../artifacts
+  find $BUILDDIR/full-system-test-sim -name '*.log' -exec cp {} $BUILDDIR/../artifacts/ \; 2>/dev/null || true
+  rm -Rf $BUILDDIR/full-system-test-sim
+}
+trap copy_logs_and_cleanup EXIT
+
 WORKFLOW_EXTRA_PROCESSING_STEPS=TPC_DEDX,MFT_RECO,MID_RECO,MCH_RECO,MATCH_MFTMCH,MATCH_MCHMID,MUON_SYNC_RECO,ZDC_RECO FST_SYNC_EXTRA_WORKFLOW_PARAMETERS=QC,CALIB_LOCAL_AGGREGATOR,CALIB_LOCAL_INTEGRATED_AGGREGATOR QC_REDIRECT_MERGER_TO_LOCALHOST=1 GEN_TOPO_WORKDIR=`pwd` ALICE_O2SIM_DUMPLOG=1 OrbitsBeforeTf=0 NEvents=5 NEventsQED=100 O2SIMSEED=12345 DO_EMBEDDING=1 $O2_ROOT/prodtests/full_system_test.sh
 $O2_ROOT/prodtests/full_system_test_ci_extra_tests.sh
 popd
-
-# Copy logs to artifacts directory for ali-bot upload
-mkdir -p $BUILDDIR/../artifacts
-find $BUILDDIR/full-system-test-sim -name '*.log' -exec cp {} $BUILDDIR/../artifacts/ \; 2>/dev/null || true
-
-rm -Rf $BUILDDIR/full-system-test-sim
 
 # Dummy modulefile
 mkdir -p $INSTALLROOT/etc/modulefiles
