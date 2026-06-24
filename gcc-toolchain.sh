@@ -227,6 +227,7 @@ mkdir -p build-isl
 mkdir -p build-mpc
 
 pushd build-gmp
+  CFLAGS="-O2 -pedantic -fomit-frame-pointer -std=gnu17"  \
   ../gmp/configure --prefix="$INSTALLROOT/libexec/extra"  \
                    --disable-shared                       \
                    --enable-static
