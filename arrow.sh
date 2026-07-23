@@ -117,6 +117,7 @@ cmake ./src_tmp/cpp                                                             
       -DCMAKE_INSTALL_PREFIX="$INSTALLROOT"                                                         \
       -DARROW_TENSORFLOW=ON                                                                         \
       -DARROW_GANDIVA=ON                                                                            \
+      -DARROW_LLVM_USE_SHARED=OFF                                                                   \
       -DARROW_COMPUTE=ON                                                                            \
       -DARROW_DATASET=ON                                                                            \
       -DARROW_FILESYSTEM=ON                                                                         \
