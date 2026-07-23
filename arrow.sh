@@ -43,10 +43,21 @@ case $ARCHITECTURE in
 _LLVM*
 __ZN4llvm*
 __ZNK4llvm*
+__ZTIN4llvm*
+__ZTSN4llvm*
+__ZTVN4llvm*
+__ZTTN4llvm*
+__ZGVN4llvm*
 EOF
     CMAKE_SHARED_LINKER_FLAGS="-Wl,-unexported_symbols_list,$PWD/no-llvm-symbols.txt"
   ;;
-  *) SONAME=so ;;
+  *)
+    SONAME=so
+    # Symbols coming from the static libraries we link (LLVM in particular) must
+    # not end up in the dynamic symbol table, or they interpose the LLVM shipped
+    # with the GPU drivers.
+    CMAKE_SHARED_LINKER_FLAGS="-Wl,--exclude-libs,ALL"
+  ;;
 esac
 
 # Downloaded by CMake, built, and linked statically (not needed at runtime):
@@ -117,6 +128,7 @@ cmake ./src_tmp/cpp                                                             
       -DCMAKE_INSTALL_PREFIX="$INSTALLROOT"                                                         \
       -DARROW_TENSORFLOW=ON                                                                         \
       -DARROW_GANDIVA=ON                                                                            \
+      -DARROW_LLVM_USE_SHARED=OFF                                                                   \
       -DARROW_COMPUTE=ON                                                                            \
       -DARROW_DATASET=ON                                                                            \
       -DARROW_FILESYSTEM=ON                                                                         \
