@@ -82,8 +82,17 @@ case $ARCHITECTURE in
    ;;
   *)
    CLANG_EXECUTABLE="${CLANG_ROOT}/bin-safe/clang"
-   # this patches version script to hide llvm symbols in gandiva library
-   sed -i.deleteme '/^[[:space:]]*extern/ a \ \ \ \ \ \ llvm*; LLVM*;' "./src_tmp/cpp/src/gandiva/symbols.map"
+   # Patch the version script to hide llvm symbols in the gandiva library, so
+   # they cannot interpose the LLVM shipped with the GPU drivers. The patterns
+   # inside the extern "C++" block match the *demangled* name, which covers the
+   # llvm:: functions but not typeinfo / vtable / VTT / guard variables. The
+   # latter are added as *mangled* patterns at top level (single leading
+   # underscore on ELF): _ZTI (typeinfo), _ZTS (typeinfo name), _ZTV (vtable),
+   # _ZTT (VTT), _ZGV (guard variable).
+   sed -i.deleteme \
+       -e '/^[[:space:]]*local:/ a \ \ \ \ \ \ _ZN4llvm*; _ZNK4llvm*; _ZTIN4llvm*; _ZTSN4llvm*; _ZTVN4llvm*; _ZTTN4llvm*; _ZGVN4llvm*;' \
+       -e '/^[[:space:]]*extern/ a \ \ \ \ \ \ llvm*; LLVM*;' \
+       "./src_tmp/cpp/src/gandiva/symbols.map"
    ;;
 esac
 
