@@ -1,6 +1,6 @@
 package: O2
 version: "%(tag_basename)s"
-tag: "daily-20260724-0000"
+tag: "daily-20260811-0000"
 requires:
   - abseil
   - arrow
@@ -24,6 +24,7 @@ requires:
   - libjalienO2
   - cgal
   - "VecGeom:(?!osx.*)"
+  - "TGeo2VecGeom:(?!osx.*)"
   - FFTW3
   - ONNXRuntime
   - nlohmann_json
