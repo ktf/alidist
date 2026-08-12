@@ -7,6 +7,7 @@ requires:
   - "GCC-Toolchain:(?!osx)"
   - protobuf
   - abseil
+  - zlib
 build_requires:
   - CMake
   - alibuild-recipe-tools
@@ -18,6 +19,8 @@ CPPFLAFS="-I$ABSEIL_ROOT/include"  cmake "$SOURCEDIR"                           
     -G Ninja                                  \
     -DCMAKE_FIND_PACKAGE_PREFER_CONFIG=ON     \
     ${ABSEIL_ROOT:+-Dabsl_DIR="$ABSEIL_ROOT"} \
+    ${ZLIB_REVISION:+-DZLIB_ROOT="$ZLIB_ROOT"} \
+    ${ZLIB_REVISION:+-DCMAKE_IGNORE_PREFIX_PATH=/usr} \
     -DCMAKE_BUILD_TYPE="${CMAKE_BUILD_TYPE}"  \
     -DCMAKE_INSTALL_PREFIX="$INSTALLROOT"     \
     -DONNX_DISABLE_STATIC_REGISTRATION=ON     \
