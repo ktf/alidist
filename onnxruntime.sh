@@ -1,6 +1,6 @@
 package: ONNXRuntime
 version: "%(tag_basename)s"
-tag: v1.22.0
+tag: v1.29.0
 license: MIT
 source: https://github.com/microsoft/onnxruntime
 requires:
@@ -73,8 +73,11 @@ fi
 
 # Optional GPU features
 ### MIGraphX
-if [[ "$ORT_ROCM_BUILD" -eq 1 ]] && [[ ${O2_GPU_MIGRAPHX_AVAILABLE:-0} == 1 ]] && [[ -z "$ORT_MIGRAPHX_BUILD" ]]; then
-  ORT_MIGRAPHX_BUILD="0" # Disable for now, not working
+# Not gated on ORT_ROCM_BUILD: upstream removed the ROCm execution provider
+# after v1.22, so MIGraphX is the only remaining AMD path and has to stand on
+# its own. It needs hip and migraphx from the ROCm installation.
+if [[ ${O2_GPU_MIGRAPHX_AVAILABLE:-0} == 1 ]] && [[ -z "$ORT_MIGRAPHX_BUILD" ]]; then
+  ORT_MIGRAPHX_BUILD="1"
 elif [[ -z "$ORT_MIGRAPHX_BUILD" ]]; then
   ORT_MIGRAPHX_BUILD="0"
 fi
@@ -149,7 +152,9 @@ cmake "cmake"                                                                   
       ${PROTOBUF_ROOT:+-DONNX_CUSTOM_PROTOC_EXECUTABLE=$PROTOBUF_ROOT/bin/protoc}                           \
       ${RE2_ROOT:+-DRE2_INCLUDE_DIR=${RE2_ROOT}/include}                                                    \
       ${BOOST_ROOT:+-DBOOST_INCLUDE_DIR=${BOOST_ROOT}/include}                                              \
+      ${BOOST_ROOT:+-DFETCHCONTENT_SOURCE_DIR_MP11=${BOOST_ROOT}}                                            \
       -Donnxruntime_USE_MIGRAPHX=${ORT_MIGRAPHX_BUILD}                                                      \
+      ${O2_GPU_ROCM_HOME:+-DAMD_MIGRAPHX_HOME=${O2_GPU_ROCM_HOME}}                                          \
       -Donnxruntime_USE_ROCM=${ORT_ROCM_BUILD}                                                              \
       -Donnxruntime_ROCM_HOME=${O2_GPU_ROCM_HOME}                                                           \
       -Donnxruntime_CUDA_HOME=${O2_GPU_CUDA_HOME}                                                           \
