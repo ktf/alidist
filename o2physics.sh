@@ -1,6 +1,14 @@
 package: O2Physics
-version: "%(tag_basename)s"
-tag: "daily-20260812-0000"
+# Explicit: %(tag_basename)s of a refs/pull/N/head tag is just "head".
+version: "pr17456"
+# Testing PR 17456 (shared precompiled header) before it is merged. aliBuild
+# fetches only refs/tags and refs/heads by default, so refs/pull has to be asked
+# for explicitly. Revert both lines to the daily tag once the PR lands.
+tag: "refs/pull/17456/head"
+ref_match_rule:
+  - "+refs/tags/*:refs/tags/*"
+  - "+refs/heads/*:refs/heads/*"
+  - "+refs/pull/17456/head:refs/pull/17456/head"
 requires:
   - O2
   - ONNXRuntime
