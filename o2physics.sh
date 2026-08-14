@@ -1,6 +1,12 @@
 package: O2Physics
-version: "%(tag_basename)s"
-tag: "daily-20260812-0000"
+version: "pr17456"
+# Testing PR 17456 (shared precompiled header) before it is merged, taken from
+# the branch it was opened from rather than refs/pull/17456/head: ref_match_rule
+# only widens the refspec when the mirror is *fetched*, never when it is first
+# cloned, and the clone under SOURCES/ does not copy refs/pull either, so the
+# checkout fails with "pathspec did not match any file(s)".
+# Revert version, tag and source together once the PR lands.
+tag: "pr17456"
 requires:
   - O2
   - ONNXRuntime
@@ -13,7 +19,7 @@ build_requires:
   - CMake
   - ninja
   - alibuild-recipe-tools
-source: https://github.com/AliceO2Group/O2Physics
+source: https://github.com/ktf/O2Physics
 track_env:
   O2PHYSICS_COMPONENTS: echo ${O2PHYSICS_COMPONENTS:-install}
   CMAKE_CXX_COMPILER_LAUNCHER: echo ${USE_RECC+recc}
