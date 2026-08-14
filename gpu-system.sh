@@ -202,7 +202,22 @@ prefer_system_check: |
         add_feature - miopen
     fi
 
-    if [[ $ALIBUILD_O2_FORCE_GPU_MIGRAPHX == 1 ]] || [[ $GPU_FEATURES =~ (^|-)"miopen"(-|_|$) && ${ALIBUILD_O2_FORCE_GPU_MIGRAPHX} != 0 && -d /opt/rocm/lib/migraphx ]]; then
+    # MIGraphX has to be new enough for the ONNXRuntime we build, not merely
+    # present: its provider references migraphx_shape_fp4x2_type, which appears
+    # in MIGraphX 7.1 (bf16 and fp8e5m2fnuz arrived in 6.4). On anything older
+    # every other file compiles and the build then dies on three enum cases, so
+    # gate on the API itself -- this turns MIGraphX back on by itself once the
+    # host is upgraded, with no disable left behind to forget about.
+    #
+    # ROCm 6.x keeps these headers in a self-contained prefix under lib/, which
+    # is on no default include path; onnxruntime.sh finds the prefix and passes
+    # it. Look in both places.
+    MIGRAPHX_C_API=
+    for _hdr in /opt/rocm/lib/migraphx/include/migraphx/migraphx.h \
+                /opt/rocm/include/migraphx/migraphx.h; do
+      if [[ -f $_hdr ]] && grep -q fp4x2 "$_hdr"; then MIGRAPHX_C_API=$_hdr; break; fi
+    done
+    if [[ $ALIBUILD_O2_FORCE_GPU_MIGRAPHX == 1 ]] || [[ $GPU_FEATURES =~ (^|-)"miopen"(-|_|$) && ${ALIBUILD_O2_FORCE_GPU_MIGRAPHX} != 0 && -n $MIGRAPHX_C_API ]]; then
       add_feature - migraphx
     fi
 
