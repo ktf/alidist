@@ -17,7 +17,10 @@ build_requires:
 #!/bin/bash -e
 
 unset CXXFLAGS
-unset CFLAGS
+# Not unset: GCC 14 turns implicit declarations, implicit int and mismatched
+# pointers into errors, and these sources predate that. gettext 0.20.1 calls
+# free() without <stdlib.h>, for one.
+export CFLAGS="-Wno-implicit-function-declaration -Wno-implicit-int -Wno-int-conversion -Wno-incompatible-pointer-types"
 export EMACS=no
 
 case $ARCHITECTURE in
