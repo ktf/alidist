@@ -56,30 +56,28 @@ fi
 
 mkdir -p $INSTALLROOT
 
-# Check ROCm MIOPEN build conditions
-if [[ ${O2_GPU_MIOPEN_AVAILABLE:-0} == 1 ]] && [[ -z "$ORT_ROCM_BUILD" ]]; then
-    ORT_ROCM_BUILD="1"
-    : ${ALIBUILD_O2_OVERRIDE_HIP_ARCHS:="gfx906,gfx908"}
-    LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/rocm/lib
-else
-  ORT_ROCM_BUILD="0"
-fi
-
 # Check CUDA CUDNN build conditions
-if [[ ${O2_GPU_CUDNN_AVAILABLE:-0} == 1 ]] && [[ -z "$ORT_CUDA_BUILD" ]] && [[ "$ORT_ROCM_BUILD" -eq 0 ]]; then
-    ORT_CUDA_BUILD="1"
-    : ${ALIBUILD_O2_OVERRIDE_CUDA_ARCHS:="89"}
+if [[ ${O2_GPU_CUDNN_AVAILABLE:-0} == 1 ]] && [[ -z "$ORT_CUDA_BUILD" ]]; then
+  ORT_CUDA_BUILD="1"
+  # Workaround for problem in ONNXRuntime when all architectures are included. To be reverted when fixed.
+  if [[ "${O2_GPU_CUDA_AVAILABLE_ARCH}" == "80-real;86-real;89-real;120-real;75-virtual" ]]; then
+    O2_GPU_CUDA_AVAILABLE_ARCH="80-real;86-real;89-real;120-real"
+  fi
+  if [[ "${O2_GPU_CUDA_AVAILABLE_ARCH}" == "75-virtual" ]]; then
+    O2_GPU_CUDA_AVAILABLE_ARCH="75"
+  fi
 else
   ORT_CUDA_BUILD="0"
 fi
 
 # Optional GPU features
 ### MIGraphX
-# Not gated on ORT_ROCM_BUILD: upstream removed the ROCm execution provider
+# Upstream removed the ROCm execution provider
 # after v1.22, so MIGraphX is the only remaining AMD path and has to stand on
 # its own. It needs hip and migraphx from the ROCm installation.
 if [[ ${O2_GPU_MIGRAPHX_AVAILABLE:-0} == 1 ]] && [[ -z "$ORT_MIGRAPHX_BUILD" ]]; then
   ORT_MIGRAPHX_BUILD="1"
+  LD_LIBRARY_PATH+=$O2_GPU_ROCM_HOME/lib
 elif [[ -z "$ORT_MIGRAPHX_BUILD" ]]; then
   ORT_MIGRAPHX_BUILD="0"
 fi
@@ -97,7 +95,6 @@ fi
 
 mkdir -p $INSTALLROOT/etc
 cat << EOF > $INSTALLROOT/etc/ort-init.sh
-export ORT_ROCM_BUILD=$ORT_ROCM_BUILD
 export ORT_CUDA_BUILD=$ORT_CUDA_BUILD
 export ORT_MIGRAPHX_BUILD=$ORT_MIGRAPHX_BUILD
 export ORT_TENSORRT_BUILD=$ORT_TENSORRT_BUILD
@@ -126,7 +123,6 @@ python3 onnxruntime/core/flatbuffers/schema/compile_schema.py --flatc $(which fl
 python3 onnxruntime/lora/adapter_format/compile_schema.py --flatc $(which flatc)
 
 cmake "cmake"                                                                                               \
-      --debug-find                                                                                          \
       -G Ninja                                                                                              \
       -DCMAKE_INSTALL_PREFIX="$INSTALLROOT"                                                                 \
       -DCMAKE_BUILD_TYPE=Release                                                                            \
@@ -175,26 +171,22 @@ cmake "cmake"                                                                   
       ${PROTOBUF_ROOT:+-DONNX_CUSTOM_PROTOC_EXECUTABLE=$PROTOBUF_ROOT/bin/protoc}                           \
       ${RE2_ROOT:+-DRE2_INCLUDE_DIR=${RE2_ROOT}/include}                                                    \
       ${BOOST_ROOT:+-DBOOST_INCLUDE_DIR=${BOOST_ROOT}/include}                                              \
-      ${BOOST_ROOT:+-DFETCHCONTENT_SOURCE_DIR_MP11=${BOOST_ROOT}}                                            \
+      ${BOOST_ROOT:+-DFETCHCONTENT_SOURCE_DIR_MP11=${BOOST_ROOT}}                                           \
       -Donnxruntime_USE_MIGRAPHX=${ORT_MIGRAPHX_BUILD}                                                      \
       ${MIGRAPHX_HOME:+-DAMD_MIGRAPHX_HOME=${MIGRAPHX_HOME}}                                                \
-      -Donnxruntime_USE_ROCM=${ORT_ROCM_BUILD}                                                              \
       -Donnxruntime_ROCM_HOME=${O2_GPU_ROCM_HOME}                                                           \
       -Donnxruntime_CUDA_HOME=${O2_GPU_CUDA_HOME}                                                           \
-      -DCMAKE_HIP_COMPILER=/opt/rocm/llvm/bin/clang++                                                       \
-      -D__HIP_PLATFORM_AMD__=${ORT_ROCM_BUILD}                                                              \
+      -DCMAKE_CUDA_COMPILER_FRONTEND_VARIANT=GCC                                                            \
+      -DCMAKE_HIP_COMPILER=${O2_GPU_CUDA_HOME}/llvm/bin/clang++                                             \
       ${O2_GPU_ROCM_AVAILABLE_ARCH:+-DCMAKE_HIP_ARCHITECTURES="${O2_GPU_ROCM_AVAILABLE_ARCH}"}              \
       ${O2_GPU_CUDA_AVAILABLE_ARCH:+-DCMAKE_CUDA_ARCHITECTURES="${O2_GPU_CUDA_AVAILABLE_ARCH}"}             \
-      -Donnxruntime_USE_COMPOSABLE_KERNEL=OFF                                                               \
-      -Donnxruntime_USE_ROCBLAS_EXTENSION_API=${ORT_ROCM_BUILD}                                             \
-      -Donnxruntime_USE_COMPOSABLE_KERNEL_CK_TILE=ON                                                        \
       -Donnxruntime_DISABLE_RTTI=OFF                                                                        \
       -DMSVC=OFF                                                                                            \
       -Donnxruntime_USE_CUDA=${ORT_CUDA_BUILD}                                                              \
       -Donnxruntime_USE_CUDA_NHWC_OPS=${ORT_CUDA_BUILD}                                                     \
-      ${CUDNN_FRONTEND_ROOT:+-DFETCHCONTENT_SOURCE_DIR_CUDNN_FRONTEND=${CUDNN_FRONTEND_ROOT}}             \
-      ${CUTLASS_ROOT:+-DFETCHCONTENT_SOURCE_DIR_CUTLASS=${CUTLASS_ROOT}}                                   \
-      ${ONNX_TENSORRT_ROOT:+-DFETCHCONTENT_SOURCE_DIR_ONNX_TENSORRT=${ONNX_TENSORRT_ROOT}}           \
+      ${CUDNN_FRONTEND_ROOT:+-DFETCHCONTENT_SOURCE_DIR_CUDNN_FRONTEND=${CUDNN_FRONTEND_ROOT}}               \
+      ${CUTLASS_ROOT:+-DFETCHCONTENT_SOURCE_DIR_CUTLASS=${CUTLASS_ROOT}}                                    \
+      ${ONNX_TENSORRT_ROOT:+-DFETCHCONTENT_SOURCE_DIR_ONNX_TENSORRT=${ONNX_TENSORRT_ROOT}}                  \
       -Donnxruntime_FUZZ_ENABLED=OFF                                                                        \
       -Donnxruntime_USE_FLASH_ATTENTION=OFF                                                                 \
       -Donnxruntime_USE_LEAN_ATTENTION=OFF                                                                  \
@@ -220,6 +212,36 @@ if [[ "$ORT_TENSORRT_BUILD" -eq 1 ]]; then
     _deps/onnx_tensorrt-src/weightUtils.cpp \
     _deps/onnx_tensorrt-src/WeightsContext.cpp \
     _deps/onnx_tensorrt-src/importerUtils.cpp
+fi
+
+# ONNXRuntime 1.29.0 added the CUDA MoE GEMM kernels, whose cicc peaks near 5 GiB
+# per translation unit -- once per architecture, and we build five. A full -j24
+# then wants ~120 GiB and the container OOM-kills mid-ninja with no diagnostic.
+# Cap on the memory we can actually see, not on cores: the two are only coupled
+# on the CI builders, and this recipe also runs on GPU boxes where they are not.
+if [[ "$ORT_CUDA_BUILD" == 1 || "$ORT_ROCM_BUILD" == 1 || "$ORT_MIGRAPHX_BUILD" == 1 ]]; then
+  ORT_MEM_KB=
+  for ORT_CG in /sys/fs/cgroup/memory.max /sys/fs/cgroup/memory/memory.limit_in_bytes; do
+    if [[ -r $ORT_CG ]]; then
+      ORT_CG_VAL=$(cat "$ORT_CG")
+      # cgroup v2 writes "max" when unlimited; v1 writes a huge sentinel.
+      if [[ $ORT_CG_VAL =~ ^[0-9]+$ ]] && [[ $ORT_CG_VAL -lt 1000000000000 ]]; then
+        ORT_MEM_KB=$((ORT_CG_VAL / 1024))
+        break
+      fi
+    fi
+  done
+  if [[ -z $ORT_MEM_KB ]] && [[ -r /proc/meminfo ]]; then
+    ORT_MEM_KB=$(awk '/^MemTotal:/ {print $2}' /proc/meminfo)
+  fi
+  if [[ -n $ORT_MEM_KB ]]; then
+    ORT_MEM_JOBS=$((ORT_MEM_KB / 1024 / 1024 / 6))
+    [[ $ORT_MEM_JOBS -gt 0 ]] || ORT_MEM_JOBS=1
+    if [[ ${JOBS:-1} -gt $ORT_MEM_JOBS ]]; then
+      echo "ONNXRuntime: GPU build, limiting to $ORT_MEM_JOBS jobs (from $JOBS) for $((ORT_MEM_KB / 1024 / 1024)) GiB" >&2
+      JOBS=$ORT_MEM_JOBS
+    fi
+  fi
 fi
 
 cmake --build . -- ${JOBS:+-j$JOBS} install
