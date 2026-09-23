@@ -39,6 +39,11 @@ cmake $SOURCEDIR -DCMAKE_INSTALL_PREFIX=$INSTALLROOT       \
 cmake --build . -- ${JOBS:+-j$JOBS}
 cmake --install .
 
+# Install ACTS example Digitization headers
+cmake -E copy_directory \
+    "$SOURCEDIR/Examples/Algorithms/Digitization/include/ActsExamples/Digitization" \
+    "$INSTALLROOT/include/ActsExamples/Digitization"
+
 case $ARCHITECTURE in
     osx*)
         find $INSTALLROOT/lib/ -name "*.dylib" -exec install_name_tool -add_rpath ${INSTALLROOT}/lib {} \;
@@ -55,13 +60,16 @@ esac
 
 [[ -d $INSTALLROOT/lib64 ]] && [[ ! -d $INSTALLROOT/lib ]] && ln -sf ${INSTALLROOT}/lib64 $INSTALLROOT/lib
 
-#ModuleFile
+# ModuleFile
 MODULEDIR="${INSTALLROOT}/etc/modulefiles"
 MODULEFILE="${MODULEDIR}/${PKGNAME}"
+
 mkdir -p ${MODULEDIR}
-alibuild-generate-module --bin --lib > "${MODULEFILE}"
+
+alibuild-generate-module --bin --lib >"${MODULEFILE}"
+
 # extra environment
-cat >> ${MODULEFILE} <<EOF
+cat >>${MODULEFILE} <<EOF
 set ACTS_ROOT \$::env(BASEDIR)/$PKGNAME/\$version
 setenv ACTS_ROOT \$ACTS_ROOT
 prepend-path ROOT_INCLUDE_PATH \$ACTS_ROOT/include

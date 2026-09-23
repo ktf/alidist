@@ -1,6 +1,6 @@
 package: arrow
 version: "v25.0.0-alice"
-tag: apache-arrow-25.0.0-alice2
+tag: apache-arrow-25.0.0-alice3
 source: https://github.com/alisw/arrow.git
 requires:
   - boost
@@ -74,11 +74,11 @@ mkdir -p ./src_tmp
 rsync -a --chmod=ug=rwX --exclude='**/.git' --delete --delete-excluded "$SOURCEDIR/" ./src_tmp/
 case $ARCHITECTURE in
   osx*)
-   # use compatible llvm@20 from brew, if available. This
+   # use compatible llvm@22 from brew, if available. This
    # must match the prefer_system_check in clang.sh
    CLANG_EXECUTABLE="${CLANG_REVISION:+$CLANG_ROOT/bin-safe/clang}"
-   if [[ -z "${CLANG_EXECUTABLE}" ]] && brew --prefix --installed llvm@20 > /dev/null 2>&1; then
-     CLANG_EXECUTABLE="$(brew --prefix llvm)@20/bin/clang"
+   if [[ -z "${CLANG_EXECUTABLE}" ]] && brew --prefix --installed llvm@22 > /dev/null 2>&1; then
+     CLANG_EXECUTABLE="$(brew --prefix llvm@22)/bin/clang"
    fi
    ;;
   *)
