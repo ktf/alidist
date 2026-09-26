@@ -1,6 +1,6 @@
 package: O2
 version: "%(tag_basename)s"
-tag: "daily-20260923-0000"
+tag: "daily-20260926-0000"
 requires:
   - abseil
   - arrow
@@ -159,7 +159,7 @@ incremental_recipe: |
     lcov --list coverage.info
   fi
 
-  if [[ ( "$ALIBOT_PR_REPO" == "AliceO2Group/AliceO2" || "$ALIBOT_PR_REPO" == "alisw/alidist" ) && $ALIBUILD_O2_FORCE_GPU == 1 ]]; then
+  if [[ ( "$ALIBOT_PR_REPO" == "AliceO2Group/AliceO2" || "$ALIBOT_PR_REPO" == "alisw/alidist" ) && $ALIBUILD_O2_FORCE_GPU == "ci" ]]; then
     GPUCA_STANDALONE_CI=1 $SOURCEDIR/GPU/GPUTracking/Standalone/cmake/build.sh $SOURCEDIR
   fi
 
@@ -287,7 +287,7 @@ if [ "$DEVEL_SOURCES" != "$SOURCEDIR" ]; then
   ln -sf $BUILDDIR/compile_commands.json $DEVEL_SOURCES/compile_commands.json
 fi
 
-if [[ ( "$ALIBOT_PR_REPO" == "AliceO2Group/AliceO2" || "$ALIBOT_PR_REPO" == "alisw/alidist" ) && $ALIBUILD_O2_FORCE_GPU == 1 ]]; then
+if [[ ( "$ALIBOT_PR_REPO" == "AliceO2Group/AliceO2" || "$ALIBOT_PR_REPO" == "alisw/alidist" ) && $ALIBUILD_O2_FORCE_GPU == "ci" ]]; then
   GPUCA_STANDALONE_CI=1  $SOURCEDIR/GPU/GPUTracking/Standalone/cmake/build.sh $SOURCEDIR
 fi
 
