@@ -1,6 +1,6 @@
 package: O2Physics
 version: "%(tag_basename)s"
-tag: "daily-20261014-0000"
+tag: "daily-20261015-0600"
 requires:
   - O2
   - ONNXRuntime
@@ -31,6 +31,10 @@ case $ARCHITECTURE in
     [[ ! $LIBUV_ROOT ]] && LIBUV_ROOT="$(brew --prefix libuv)"
   ;;
 esac
+
+# ROOT v6.40 deprecates TGrid, which PWGEM still calls; -Werror comes from
+# O2PHYSICS_WARNINGS_AS_ERRORS, so demote it here rather than failing the build.
+CXXFLAGS="${CXXFLAGS} -Wno-error=deprecated-declarations"
 
 # When O2 is built against Gandiva (from Arrow), then we need to use
 # -DLLVM_ROOT=$CLANG_ROOT, since O2's CMake calls into Gandiva's
