@@ -1,6 +1,6 @@
 package: O2
 version: "%(tag_basename)s"
-tag: "daily-20261029-0000"
+tag: "daily-20261031-0000"
 requires:
   - abseil
   - arrow
@@ -38,6 +38,8 @@ requires:
   - gpu-system
   - Eigen3
   - GBL
+  - Mille
+  - Millepede-II
 license: GPL-3.0
 build_requires:
   - abseil
